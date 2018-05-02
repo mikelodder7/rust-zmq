@@ -1,4 +1,4 @@
-Rust ZeroMQ bindings.
+Rust ZeroMQ mobile bindings.
 
 [![Travis Build Status](https://travis-ci.org/erickt/rust-zmq.png?branch=master)](https://travis-ci.org/erickt/rust-zmq)
 [![Appveyor Build status](https://ci.appveyor.com/api/projects/status/xhytsx4jwyb9qk7m?svg=true)](https://ci.appveyor.com/project/erickt/rust-zmq)
@@ -12,9 +12,13 @@ Rust ZeroMQ bindings.
 
 [Release Notes](https://github.com/erickt/rust-zmq/tree/master/NEWS.md)
 
+rust-zmq-mobile is intended to be built for environments where zmq
+isn't or can't be loaded by the OS such as iOS or Android when rust-zmq
+would fail when building with cargo.
+
 # Installation
 
-Currently, rust-zmq requires ZeroMQ 3.2 or newer. For example, on
+Currently, rust-zmq-mobile requires ZeroMQ 3.2 or newer. For example, on
 recent Debian-based distributions, you can use the following command
 to get the prerequiste headers and library installed:
 
@@ -22,30 +26,32 @@ to get the prerequiste headers and library installed:
 
 If your OS of choice does not provide packages of a new-enough libzmq,
 you will first have to install it from source; see
-<https://github.com/zeromq/libzmq/releases>.
+<https://github.com/zeromq/libzmq/releases> or build it for your intended
+target OS. ZeroMQ can be built for
 
 
-rust-zmq uses [cargo](https://crates.io) to install. Users should add this to
+rust-zmq-mobile uses [cargo](https://crates.io) to install. Users should add this to
 their `Cargo.toml` file:
 
     [dependencies]
-    zmq = "0.8"
+    zmq-mobile = "0.1"
 
-The build normally uses `pkg-config` to find out about libzmq's
-location. If that is not available, the environment variable
-`LIBZMQ_PREFIX` (or alternatively, `LIBZMQ_LIB_DIR` and
-`LIBZMQ_INCLUDE_DIR`) can be defined to avoid the invocation of
-`pkg-config`.
+The environment variables `LIBZMQ_PREFIX` (or alternatively, `LIBZMQ_LIB_DIR` and
+`LIBZMQ_INCLUDE_DIR`) must be defined to dynamically or statically link. If
+`LIBZMQ_STATIC`=1 is specified, ZeroMQ libraries will be statically linked rather
+than dynamically linked.
+
+To build zmq for Android see [here](https://github.com/mikelodder7/android-building/tree/master/x86/zeromq)
 
 # Usage
 
-`rust-zmq` is a pretty straight forward port of the C API into Rust:
+`rust-zmq-mobile` is a pretty straight forward port of the C API into Rust:
 
 ```rust
-extern crate zmq;
+extern crate zmq-mobile;
 
 fn main() {
-    let ctx = zmq::Context::new();
+    let ctx = zmq-mobile::Context::new();
 
     let mut socket = ctx.socket(zmq::REQ).unwrap();
     socket.connect("tcp://127.0.0.1:1234").unwrap();
@@ -54,32 +60,32 @@ fn main() {
 ```
 
 You can find more usage examples in
-https://github.com/erickt/rust-zmq/tree/master/examples.
+https://github.com/mikelodder7/rust-zmq-mobile/tree/master/examples.
 
 # Contributing
 
-Install for contributing to rust-zmq:
+Install for contributing to rust-zmq-mobile:
 
-    % git clone https://github.com/erickt/rust-zmq
-    % cd rust-zmq
+    % git clone https://github.com/mikelodder7/rust-zmq-mobile
+    % cd rust-zmq-mobile
     % cargo build
 
 Note that the `master` branch is currently in API-breaking mode while
-we try to make the API more ergomic and flexible for the `0.9` release
+we try to make the API more ergomic and flexible for the `0.1` release
 series.
 
 __This means that pull requests (e.g. bugfixes), which do not need to
 break API should be submitted for the `release/v0.8` branch__. This
 also applies to new features, if they can be implemented in an
 API-compatible way, the pull request should also aim for
-`release/v0.8`. Please submit an issue for missing features before you
+`release/v0.1`. Please submit an issue for missing features before you
 start coding, so the suitable branch and other potential questions can
 be clarified up-front.
 
 The reason for using branches, and thus increasing overhead a bit for
 all involved, is that it's not yet clear how long it will take to
 reach a point in `master` that we feel comfortable with releasing as
-0.9.0, as we'd like to have the core part of the API more-or-less
+0.1.0, as we'd like to have the core part of the API more-or-less
 fixed by then. Using the `release/v0.8` branch we can deliver bugfixes
 and smaller features in the meantime without forcing users to follow
 master's changing API and to continuously adjust their code to API
